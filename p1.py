@@ -4,10 +4,12 @@ WIDTH = 800
 HEIGHT = 600
 
 p3 = Actor("p3_stand")
-p3.pos = (400, 400)
+p3.pos = (100, 400)
 p3.images= ['p3_walk01', 'p3_walk02', 'p3_walk03', 'p3_walk04', 'p3_walk05', 'p3_walk06', 'p3_walk07', 'p3_walk08', 'p3_walk09','p3_walk10', 'p3_walk11']
 p3.imageindex = 0
 
+p3.velocity_y = 0
+p3.gravity = 1
 
 def draw():
     # screen.fill((0,255,0))
@@ -27,6 +29,19 @@ def update():
     p3.image=p3.images[p3.imageindex]
     p3.imageindex += 1
 
+    # jump when space pressed
+    if keyboard.space:
+        # set initial velocity
+        p3.velocity_y = -15
+    # move base on velocity
+    p3.y += p3.velocity_y
 
+    # update the velocity base on gravity
+    p3.velocity_y += p3.gravity
+
+    # if hit the ground correct the velocity and position
+    if p3.y > 400:
+        p3.velocity_y = 0
+        p3.y = 400
 
 pgzrun.go() # Must be last line
