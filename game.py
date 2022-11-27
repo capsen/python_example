@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import pygame
+import pyzgame1
 import sys
 import time
 import random
@@ -8,17 +8,17 @@ import random
 from pygame.locals import *
 
 FPS = 15
-pygame.init()
-fpsClock=pygame.time.Clock()
+pyzgame1.init()
+fpsClock=pyzgame1.time.Clock()
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
-surface = pygame.Surface(screen.get_size())
+screen = pyzgame1.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
+surface = pyzgame1.Surface(screen.get_size())
 surface = surface.convert()
 surface.fill((255,255,255))
-clock = pygame.time.Clock()
+clock = pyzgame1.time.Clock()
 
-pygame.key.set_repeat(1, 40)
+pyzgame1.key.set_repeat(1, 40)
 
 GRIDSIZE=10
 GRID_WIDTH = SCREEN_WIDTH / GRIDSIZE
@@ -31,8 +31,8 @@ RIGHT = (1, 0)
 screen.blit(surface, (0,0))
 
 def draw_box(surf, color, pos):
-    r = pygame.Rect((pos[0], pos[1]), (GRIDSIZE, GRIDSIZE))
-    pygame.draw.rect(surf, color, r)
+    r = pyzgame1.Rect((pos[0], pos[1]), (GRIDSIZE, GRIDSIZE))
+    pyzgame1.draw.rect(surf, color, r)
 
 class Snake(object):
     def __init__(self):
@@ -110,9 +110,9 @@ if __name__ == '__main__':
     rock = Rock()
     while True:
 
-        for event in pygame.event.get():
+        for event in pyzgame1.event.get():
             if event.type == QUIT:
-                pygame.quit()
+                pyzgame1.quit()
                 sys.exit()
             elif event.type == KEYDOWN:
                 if event.key == K_UP:
@@ -132,13 +132,13 @@ if __name__ == '__main__':
         snake.draw(surface)
         apple.draw(surface)
         rock.draw(surface)
-        font = pygame.font.Font(None, 36)
+        font = pyzgame1.font.Font(None, 36)
         text = font.render(str(snake.length), 1, (10, 10, 10))
         textpos = text.get_rect()
         textpos.centerx = 20
         surface.blit(text, textpos)
         screen.blit(surface, (0,0))
 
-        pygame.display.flip()
-        pygame.display.update()
+        pyzgame1.display.flip()
+        pyzgame1.display.update()
         fpsClock.tick(FPS + snake.length/3)
