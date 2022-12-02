@@ -11,11 +11,17 @@ p3.imageindex = 0
 p3.velocity_y = 0
 p3.gravity = 1
 
+obstacles = []
+obstacles_timeout = 0
+
 def draw():
     # screen.fill((0,255,0))
     screen.draw.filled_rect(Rect(0,0,800,400), (163, 232, 254))
     screen.draw.filled_rect(Rect(0,400,800,200), (88, 242, 152))
     p3.draw()
+
+    for actor in obstacles:
+        actor.draw()
 
 def update():
     # move object
@@ -32,7 +38,9 @@ def update():
     # jump when space pressed
     if keyboard.space:
         # set initial velocity
-        p3.velocity_y = -15
+        p3.velocity_y = -10
+        if p3.y==400:
+            sounds.jump.play()
     # move base on velocity
     p3.y += p3.velocity_y
 
@@ -43,5 +51,20 @@ def update():
     if p3.y > 400:
         p3.velocity_y = 0
         p3.y = 400
+    
+    # set obstacles
+    global obstacles, obstacles_timeout
+    obstacles_timeout += 1
+    if obstacles_timeout > 50:
+        actor = Actor('cactus')
+        actor.x = 850
+        actor.y = 400
+        obstacles.append(actor)
+        obstacles_timeout = 0
+
+    for actor in obstacles:
+        actor.x -= 8
+        if actor.right < 0: 
+            obstacles.remove(actor)
 
 pgzrun.go() # Must be last line
