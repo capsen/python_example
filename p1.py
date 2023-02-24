@@ -1,10 +1,13 @@
 import pgzrun
+import random
+import time
 
 WIDTH = 800
 HEIGHT = 600
 
 obstacles=[]
 obstacles_timeout=0
+obstacles_images=["cactus","flaggreen2","slimewalk1"]
 score=0
 game_over= False
 
@@ -20,7 +23,6 @@ def draw():
     # screen.fill((0,255,0))
     screen.draw.filled_rect(Rect(0,0,800,400), (163, 232, 254))
     screen.draw.filled_rect(Rect(0,400,800,200), (88, 242, 152))
-
     if game_over:
         screen.draw.text("Game over", centerx=400, centery=270, color=(0, 0, 0), fontname="bauhs93", fontsize=32)
         screen.draw.text("score: "+str(score), centerx=400, centery=330, color=(0, 0, 0), fontname="bauhs93", fontsize=32)
@@ -44,15 +46,21 @@ def update():
 
     # make p3 jump if space pressed
     if keyboard.space or keyboard.up:
-        p3.velocity_y = -15
+        
+        if not p3.jumping or (p3.y > 250 and p3.velocity_y < 0):
+            p3.velocity_y = -15
+
         if not p3.jumping:
             sounds.jump.play()
             p3.jumping=True
+
         if game_over:
             game_over = False
             score=0
             p3.velocity_y=0
             p3.y=400
+            obstacles_timeout
+            obstacles.clear()
 
         
     p3.y += p3.velocity_y
@@ -67,11 +75,11 @@ def update():
     
     obstacles_timeout +=1
     if obstacles_timeout > 50 and not game_over:
-        obstacle = Actor('cactus')
+        obstacle = Actor(random.choice(obstacles_images))
         obstacle.x = 850
         obstacle.y = 400
         obstacles.append(obstacle)
-        obstacles_timeout = 0
+        obstacles_timeout = random.randint(0,20)
 
     for obstacle in obstacles:
         obstacle.left -= 8
@@ -81,7 +89,10 @@ def update():
                 score += 1
     
     if p3.collidelist(obstacles) != -1:
+        if not game_over:
+            sounds.die.play()
         game_over=True
+        
 
 
 pgzrun.go() # Must be last line
