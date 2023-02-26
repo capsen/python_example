@@ -6,23 +6,15 @@ mod = sys.modules['__main__']
 
 class Sprite(Actor):
     def __init__(self, image, pos=POS_TOPLEFT, anchor=ANCHOR_CENTER, **kwargs):
-        self._show=True
+        self.show=True
         self.message=""
         super().__init__(image, pos, anchor, **kwargs)
-    
-    @property
-    def show(self):
-        return self._show
 
     def draw(self):
         super().draw()
         if(self.message):
             self.draw_speak()
 
-    @show.setter
-    def show(self, show):
-        self._show = show
-    
     def draw_speak(self):
         position = self.topleft
         messagebox_width = 100

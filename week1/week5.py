@@ -1,4 +1,5 @@
 import pgzrun
+from pgzero import sounds, clock, animate, screen
 from pgzhelper import *
 from sprite import *
 from button import Button
@@ -32,6 +33,7 @@ btns.append(next_btn)
 
 back_btn = Button("prev", (150, 520), prev_frame)
 back_btn.scale=0.3
+back_btn.show=False
 elements.append(back_btn)
 btns.append(back_btn)
 
@@ -63,28 +65,48 @@ def update():
 def frame_changed():
     match current_frame:
         case 1:
+            next_btn.show=False
+            back_btn.show=False
             abby.show=True
             abby.message="Hello Devin, how are you?"
+            sounds.hello_devin.play()
+            clock.schedule(next_frame, 3)
         case 2:
             abby.message=""
             devin.show=True
             devin.message="I am good, thank you."
+            sounds.iamgood.play()
+            clock.schedule(next_frame, 3)
         case 3:
             abby.message="Let's go out and play."
             devin.message=""
+
+            sounds.letgoout.play()
+
+            clock.schedule(next_frame, 3)
         case 4:
             abby.message=""
             devin.message="OK"
-        case _:
+            sounds.ok.play()
+            clock.schedule(next_frame, 1)
+        case 5:
             abby.message=""
             devin.message=""
 
-    if current_frame>0:
-        back_btn.show=True
-    else:
-        back_btn.show=False
+            animate(abby, pos=(abby.pos[0]+200, abby.pos[1]), duration=1)
+            
+            animate(devin, pos=(devin.pos[0]-400, devin.pos[1]), duration=1)
+        case _:
+            abby.message=""
+            devin.message=""
+            
 
-    if current_frame>3:
+    # if current_frame>0:
+    #     back_btn.show=True
+    # else:
+    #     back_btn.show=False
+
+    if current_frame>4:
         backdrops.image="boardwalk"
 
 
