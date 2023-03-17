@@ -1,5 +1,4 @@
 import pgzrun
-from pgzero import sounds, clock, animate, screen
 from pgzhelper import *
 from sprite import *
 from button import Button
@@ -92,9 +91,7 @@ def frame_changed():
         case 5:
             abby.message=""
             devin.message=""
-
             animate(abby, pos=(abby.pos[0]+200, abby.pos[1]), duration=1)
-            
             animate(devin, pos=(devin.pos[0]-400, devin.pos[1]), duration=1)
         case _:
             abby.message=""
