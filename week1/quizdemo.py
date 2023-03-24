@@ -14,9 +14,6 @@ backdrops = Sprite("bg1")
 backdrops.scale = 0.2
 backdrops.pos=(400,300)
 
-q = Option("option", pos=(400, 100), message="what's the answer of 1+3?")
-q.scale = 2.5
-
 question1 = {
     "description" : "What's the answer of 1+3?",
     "options" : [1, 2, 3, 4],
@@ -26,17 +23,31 @@ question1 = {
 question2 = {
     "description" : "What's your favorite pet?",
     "options" : ["cat", "dog", "elephant", "snake"],
-    "correct_answer" : 4
+    "correct_answer" : "cat"
 }
 
-question_ui = Question()
+question3 = {
+    "description" : "What's the distance between Mars and Sun",
+    "options" : ["1AU", "3,000km", "1.5AU", "7million km"],
+    "correct_answer" : "1.5AU"
+}
 
-question_ui.display_options(question1)
+questions = []
+answers=[]
+questions.append(question1)
+questions.append(question2)
+questions.append(question3)
+
+current_question = 0
+
+
+
+question_ui = Question(question=questions[current_question], select_callback=check_question)
+question_ui.display_options(questions[current_question])
 
 def draw():
     screen.clear()
     backdrops.draw()
-    q.draw()
     question_ui.draw()
 
 def on_mouse_down(pos):
