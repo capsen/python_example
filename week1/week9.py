@@ -1,5 +1,6 @@
 import pygame
 import pgzrun
+import json
 from pgzhelper import *
 
 mod = sys.modules['__main__']
@@ -55,17 +56,19 @@ class Question():
     def option_clicked(self, option_value):
         self.current_answer=option_value
         print(option_value)
-        self.slide([self.questionUI, self.op1, self.op2, self.op3, self.op4], 0.5, False, self.callback)
+        self.slide([self.questionUI, self.op1, self.op2, self.op3, self.op4], 0.5, False)
+        clock.schedule(self.callback, 0.5)
+        
 
     def start_entry(self):
         self.slide([self.questionUI, self.op1, self.op2, self.op3, self.op4], 0.5, True)
     
-    def slide(self, objs, duration, isEntry, on_finished=None):
+    def slide(self, objs, duration, isEntry):
         for obj in objs:
             end=obj.pos if isEntry else (obj.pos[0]-800,obj.pos[1])
             start=(obj.pos[0]+800,obj.pos[1]) if isEntry else obj.pos
             obj.pos=start
-            animate(obj, pos=end, duration=duration, on_finished=on_finished)
+            animate(obj, pos=end, duration=duration)
     
     def draw(self):
         self.questionUI.draw()
@@ -88,26 +91,9 @@ class Question():
         
 
 # below is the test code
-q1={
-    "description" : "What's the answer of 1+1?",
-    "options": [1, 2, 3, 4],
-    "correct_answer": 2,
-    "score" : 1
-}
-
-q2={
-    "description" : "What's the answer of 6*4?",
-    "options": [21, 22, 24, 28],
-    "correct_answer": 24,
-    "score" : 1
-}
-
-q3={
-    "description" : "Who is the best person?",
-    "options": ["Tony", "Capsen", "Tom", "Jerry"],
-    "correct_answer": "Capsen",
-    "score" : 1
-}
+with open('quiz_questions.json', 'r') as f:
+    # load the data from the file
+    quiz_data = json.load(f)
 
 WIDTH = 800
 HEIGHT = 600
@@ -119,25 +105,29 @@ backdrops.pos=(400,300)
 current_question=0
 questions=[]
 
+quiz_end = Option("question", "", pos=(400, 200))
+quiz_end.show = False
+quiz_end.scale=0.6
+
 def question_answered():
     global current_question
     if(current_question<len(questions)-1):
        current_question+=1
        questions[current_question].start_entry()
     else:
+        quiz_result = 0
         for q in questions:
             if q.current_answer == str(q.question["correct_answer"]):
                 print("True")
+                quiz_result +=1
             else:
                 print("False")
+        quiz_end.optiontext= "Congratulations! You have passed the test." if quiz_result>len(questions)/2 else "Sorry! You didn't passed the test, please try again"
+        quiz_end.show = True
 
-
-question1 = Question(q1, callback=question_answered)
-question2 = Question(q2, callback=question_answered)
-question3 = Question(q3, callback=question_answered)
-questions.append(question1)
-questions.append(question2)
-questions.append(question3)
+for question in quiz_data["questions"]:
+    q = Question(question, callback=question_answered)
+    questions.append(q)
 
 questions[current_question].start_entry()
 
@@ -145,6 +135,7 @@ def draw():
     screen.clear()
     backdrops.draw()
     questions[current_question].draw()
+    quiz_end.draw()
 
 def on_mouse_down(pos):
     questions[current_question].on_mouse_down(pos)
